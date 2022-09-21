@@ -1,0 +1,248 @@
+--------------DQL Assignment-----------------
+-------------Fatima Shafana---------------
+
+--Q1
+select Firstname,0.3*(salary*12) AS [Annual Income] from Employee
+
+--Q2
+select Firstname from Employee order by Firstname
+
+--Q3
+select * from Employee order by salary desc
+
+--Q4
+select * from Employee where Firstname like 'A%e%t'
+
+--Q5
+select * from Employee where JoiningDate>1998-01-01 and salary>25000
+
+--Q6
+select * from Employee where Commission is null
+
+--Q7
+select cast(ProName as varchar)+' costs '
+	+cast(proprice as varchar)
+	+' after discount' as [Festive Offer] from Product 
+
+
+--Q8
+select * from Product where price>50 and price<100
+
+--Q9
+SELECT * FROM Product WHERE Price BETWEEN 50 AND 100;
+
+--Q10
+select distinct Designation from Employee 
+
+
+
+
+											--DML--
+
+--Q1
+select empno as [id],LastName as [lastname],deptno as [deptid] into Emp2 from Employee
+--Q2
+insert into Employee values(1,1,'Manish','Kadulkar',1,10,500,1,'09-09-2022','Software Engineer')
+
+--Q3
+insert into Department values(10,'Accounts',2,'Trivandrum')
+
+--Q4
+insert into Department values(11,'IT',2,'Trivandrum')
+insert into Department values(12,'IB3',2,'Trivandrum')
+insert into Department values(13,'IB4',2,'Trivandrum')
+
+insert into Employee values(2,3,'Satish','Kuvlekar',2,12,500000,1,'2022-09-09','Software Engineer')
+insert into Employee values(3,3,'Ramesh','Sawant',3,12,600000,1,'2021-09-20','Software Engineer')
+insert into Employee values(4,3,'Shyam','Patade',4,12,500000,1,'2018-01-01','Software Engineer')
+
+insert into Customer values(101,'Anu','Mumbai'),
+							(102,'Ahmer','Lucknow'),
+							(104,'Divya','Vijaywada')
+
+insert into Order values(11,'101'),
+						(12,'102'),
+						(13,'103')
+
+insert into OrderItem values(1,11,'Shampoo',1),
+						(2,12,'Trimmer',1),
+						(3,13,'Facewash',1)
+
+insert into Course values(1100,100,'Databases','SQL',4000),
+						(1101,100,'Java','Programming language',4000),
+						(1102,100,'Data Science','Python',4000)
+
+insert into Batch values(1,1100,'1'),
+						(2,1100,'2'),
+						(3,1100,'3')
+
+insert into Student values(121,'Dhamne','M','Chaitrali','1998-10-06','Parabwadi','Kankavli','MH','416604','9809766787','Chaitu','chaitu@gmail.com','A'),
+							(122,'Sawant','K','Girija','1998-04-19','Poyekarvadi','Kankavli','MH','416604','9809798787','Giri','giri@gmail.com','B-'),
+							(123,'Gavkar','F','Siddhesh','1998-05-20','Kasal','Kankavli','MH','416604','9809766667','Sid','sid@gmail.com','A')
+
+
+--Q5
+delete from Customer where custid=102
+
+--Q6
+insert into Employee(empno,firstname,lastname) values(5,'Sudhir','Mangle')
+
+--Q7
+update Customer set CAddress='New Delhi' where custno=101
+
+--Q8
+delete from Employee where deptno=12 and salary>5000
+
+--Q9
+update Employee set deptno=10,firstname='Manisha' where EmpNo=1
+
+--Q10
+update Student set email='NA' where email IS NULL
+
+--Q11
+delete from Student where DATEDIFF(YEAR,dob,GETDATE())>20
+
+
+--Q12
+delete from Student where telephone is null and email is null
+
+--Q13
+delete from Student where dob like '%06-05'
+
+--Q14
+update Student set firstname='XXXX',dob=getdate() where firstname like'____A%'
+
+--Q15
+delete from student where sstate like '%a'
+
+--Q16
+update student set lastname='Jan' where MONTH(dob)=01
+
+--Q17
+delete from student where sstate like 'T%'
+
+
+
+ 
+
+--Q1
+Create database Company
+
+--Q2
+create table Department(
+	DeptNo numeric(2) primary key,
+	DeptName varchar(20) unique,
+	DFloor numeric(2),
+	DLocation varchar(20)
+)
+
+--Q3
+create table Employee(
+	EmpNo numeric(3) primary key,
+	ManagerId numeric(3),
+	Firstname varchar(20) NOT NULL,
+	LastName varchar(20),
+	UserID varchar(20),
+	deptNo numeric(2)
+		constraint fk_deptno
+		foreign key (DeptNo)
+		references Department(DeptNo)
+		on delete cascade,
+	salary numeric(5,2),
+	Commission numeric(3),
+	JoiningDate date,
+	Designation varchar(25)
+)
+	
+--Q4 Q5
+alter table Employee add HRA decimal(5,2)
+
+--Q6
+alter table Employee add PF decimal(7,2)
+	CONSTRAINT chk_PF
+	CHECK(PF>5000)
+
+--Q7
+create database Store
+
+--Q8
+create table Customer
+(
+	Custno numeric(3) primary key,
+	CustName varchar(20),
+	CAddress varchar(40)
+)
+
+--Q9
+create table Order
+(
+	Orderno numeric(3) primary key,
+	Custno numeric(3) 
+		constraint fk_custno
+		foreign key (custno)
+		references Customer(Custno)
+		on delete cascade,
+	orderdate date,
+)
+
+--Q10
+create table OrderItem
+(
+	ItemID numeric(3) primary key,
+	OrderNo numeric(3)
+		constraint fk_orderno
+		foreign key (orderno)
+		references Order(orderno)
+		on delete cascade,
+	ItemName varchar(20),
+	Quantity numeric(2),
+)
+
+--Q11
+Alter table Customer alter column Caddress numeric(100)
+
+--Q12
+create database Institution
+
+--Q13
+create table course(
+	courseId varchar(5) primary key,
+	streamId varchar(20),
+	Title varchar(40),
+	CDescription varchar(200),
+	Fees int,
+)
+
+--Q14
+create table batch(
+	batchId varchar(30),
+	courseId varchar(5),
+	batchName char(1)
+)
+
+--Q15
+Create table Student(
+	studId varchar(20) primary key,
+	lastName varchar(25),
+	middleName varchar(30),
+	firstName varchar(20),
+	dob date default getdate(),
+	addr varchar(50),
+	city varchar(20),
+	sstate varchar(2),
+	zipcode varchar(9),
+	telephone varchar(10),
+	fax varchar(10),
+	email varchar(30),
+	grade char(2) check(grade in ('A','A+','A-','B+','B-','C','C+','D','D+','D-','F','F+','F-'))
+)
+
+--Q16
+alter table Student drop column middleName 
+
+--Q17
+EXEC sp_rename 'Student','Participant'
+
+
+ 
+
