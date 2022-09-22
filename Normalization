@@ -1,0 +1,67 @@
+
+CREATE DATABASE LIBRARY
+
+create table Member(
+	MemoNo INT PRIMARY KEY,
+	MName NVARCHAR(20),
+	MAddress NVARCHAR(50),
+	Phone BIGINT,
+	CreatedDate DATE DEFAULT GETDATE()
+)
+create table Category(
+	CategoryId INT PRIMARY KEY,
+	CategoryName NVARCHAR(30) UNIQUE,
+	CreatedDate DATE DEFAULT GETDATE()
+)
+
+create table Movie(
+	MovieName NVARCHAR(30) UNIQUE,
+	CategoryId INT
+		constraint fk_categoryid
+		foreign key (CategoryId)
+		references Category(CategoryId)
+		on delete cascade,
+	CreatedDate DATE DEFAULT GETDATE()
+)
+
+
+
+create table Register(
+	MemoNo INT 
+		constraint fk_memono
+		foreign key (MemoNo)
+		references Member(MemoNo)
+		on delete cascade,
+	MovieName NVARCHAR(30),
+	IssueDate DATE,
+	ReceivedDate DATE,
+	CreatedDate DATE DEFAULT GETDATE()
+)
+
+INSERT INTO Member (MemoNo,MName,MAddress,Phone) VALUES(101,'Robert','#4 Light Street',9448903311),
+									(120,'Thomas','#20 Thornard',8122998888),
+									(110,'Albert','#2 Thornard',7779990012),
+									(112,'James','#5 Light Street',7869534231),
+									(130,'Stacy','#No 1 Gopalne',7766554433)
+
+INSERT INTO Category(CategoryId,CategoryName) VALUES(1,'Action'),
+													(2,'Romance'),
+													(3,'Thriller')
+							
+INSERT INTO Movie(MovieName,CategoryId) VALUES('Pirates',1),
+												('Samson the Great',1),
+												('Titanic',2),
+												('Thamasamenthe',3),
+												('Kowsalam',1),
+												('Anathan',3)
+
+INSERT INTO Register(MemoNo,MovieName,IssueDate,ReceivedDate) VALUES(101,'Pirates','2015-01-01','2015-01-02'),
+																	(101,'Samson the Great','2015-01-01','2015-01-02'),
+																	(120,'Titanic','2015-01-05','2015-01-20'),
+																	(110,'Thamasamenthe','2015-02-15','2015-02-24'),
+																	(112,'Kowsalam','2015-01-02','2015-01-12'),
+																	(112,'Titanic','2015-01-02','2015-01-12'),
+																	(130,'Anathan','2015-03-03','2015-03-13')
+
+select count(movieName) as [No. of members] from Register where MovieName like 'Titanic'
+select moviename,count(movieName) as [No. of members] from Register group by(MovieName)
