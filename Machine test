@@ -1,0 +1,85 @@
+--Fatima Shafana
+CREATE TABLE Employee(
+	EmployeeID INT PRIMARY KEY IDENTITY,
+	EmpName VARCHAR(20),
+	Phone BIGINT,
+	Email NVARCHAR(40)
+)
+
+CREATE TABLE Manufacturer(
+	MfName VARCHAR(20) PRIMARY KEY,
+	City VARCHAR(20),
+	State VARCHAR(20),
+)
+
+CREATE TABLE Computer(
+	SerialNumber VARCHAR(20),
+	MfName VARCHAR(20)
+		CONSTRAINT fk_MfName
+		FOREIGN KEY (MfName)
+		REFERENCES Manufacturer(MfName)
+		ON DELETE CASCADE,
+	Model VARCHAR(20),
+	Weight NUMERIC(7,2),
+	EmployeeID INT
+		CONSTRAINT fk_empId
+		FOREIGN KEY (EmployeeId)
+		REFERENCES Employee(EmployeeId)
+		ON DELETE CASCADE
+)
+
+DROP TABLE Computer
+
+INSERT INTO Manufacturer VALUES('Lenovo','Charity','South Dakota'),
+								('IBM','Seattle','Washington'),
+								('Acer','Pierre','South Dakota'),
+								('Apple','Buffalo','New York'),
+								('Dell','Dallas','Texas')
+
+INSERT INTO Employee VALUES('Shraddha',9561335944,'shraddha@gmail.com')
+INSERT INTO Employee VALUES('Manav',7769929877,'Manav@gmail.com')
+INSERT INTO Employee VALUES('Rohan',2561333444,'rohan@gmail.com')
+INSERT INTO Employee VALUES('Rohini',2561115944,'rohini@gmail.com')
+
+INSERT INTO Computer VALUES('RZ00987N','Lenovo','X00TD',300.0,1)
+INSERT INTO Computer VALUES	('SZ00999N','Acer','X00TD',320.0,2),
+							('AZ0022N','Apple','8s',480.0,3),
+							('BZ0012N','IBM','Superpro',1200.20,4)
+
+--Q1  List the manufacturers’ names that are located in South Dakota.
+
+select MfName from Manufacturer where State like 'South Dakota'
+
+--Q2 Calculate the average weight of the computers in use.
+
+select avg(weight) as 'Average weight' from Computer
+
+--Q3 List the employee names for employees whose phone number starts with 2.
+select EmpName from Employee where phone like '2%'
+
+--Q4List the serial numbers for computers that have a weight below average.
+select SerialNumber from Computer where weight<(select avg(weight) from Computer)
+
+--Q5 List the manufacturer names of companies that do not have any computers in use. Use a subquery.
+select MfName from Manufacturer where MfName not in (select Mfname from Computer)
+
+--Q6 List the employee name, their computer serial number, and the city that they were manufactured in. Use a join.
+select e.EmpName,c.SerialNumber,m.City 
+from Computer c
+join Employee e 
+	on c.EmployeeID=e.EmployeeID
+join Manufacturer m
+	on m.MfName=c.MfName
+
+--Q7  Write a Procedure  that takes EmployeeId  and List the serial number, manufacturer name, model, and weight of computer that belong to the specified employeeid.
+
+create procedure sp_GetComputerDetails
+@EmpId int
+as
+begin
+select SerialNumber,MfName,Model,Weight from Computer where EmployeeId=@EmpID
+end
+
+sp_GetComputerDetails 1
+	
+	
